@@ -367,7 +367,7 @@ void MainWindow::createProject()
     }
 
     Project *project = new Project(m_graphEditor);
-    project->addCodeDocument(KTextEditor::Editor::instance()->createDocument(nullptr));
+    project->createCodeDocument(QString("main"));
     project->addGraphDocument(m_graphEditor->createDocument());
     project->setModified(false);
 
@@ -487,11 +487,17 @@ void MainWindow::createCodeDocument()
                             i18n("Enter the name of your new script"));
     if (basePrefix.isNull()) {
         qDebug() << "Filename is empty and no script file was created.";
-    } else {
-        QString fileName = uniqueFilename(basePrefix, "js"); //TODO this does nothing
-        KTextEditor::Document *document = KTextEditor::Editor::instance()->createDocument(nullptr);
-        m_currentProject->addCodeDocument(document);
+        return;
     }
+
+    auto fullPath = m_currentProject->workingDir() + "/" + basePrefix + ".js";
+    QFile file(fullPath);
+    if (file.exists()) {
+        qCritical() << "Error: file already exists";
+        return;
+    }
+
+    m_currentProject->createCodeDocument(basePrefix);
 }
 
 void MainWindow::createGraphDocument()

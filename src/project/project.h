@@ -88,6 +88,9 @@ public:
      */
     QList<KTextEditor::Document*> codeDocuments() const;
 
+    KTextEditor::Document* createCodeDocument(QString filePath);
+    KTextEditor::Document* openCodeDocument(const QUrl &url);
+
     /**
      * Add code document @p document to project. This updates the document's url.
      */
